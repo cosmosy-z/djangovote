@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vote</title>
+</head>
+<body>
+<form action="/vote/" method="post">
+    {%   for item in ret %}
+      <div>
+          <input type="radio" name="选项" value={{ item.name }} >{{ item.name }}<br>
+      </div>
+    {% endfor %}
+    <input type="button" value="投票" onclick="VoteOption(this)">
+</form>
+
+
+<script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+<script>
+    function VoteOption(ths) {
+        var voteoption = $("input[name='选项']:checked").val();
+        alert(voteoption);
+
+        $.ajax({
+            url:'/vote/',
+            type:'POST',
+            data:{'vote_data':voteoption},
+            success:function(arg){
+                 if(arg=="OK"){
+                    window.location.href = "/vote_result/"
+{#                     将数据库的内容在下面显示出来#}
+                 }else{
+                     alert(arg)
+
+                 }
+            }
+        })
+    }
+</script>
+</body>
+</html>

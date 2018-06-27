@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>options</title>
+</head>
+<body>
+    <form action="/options/" method="post" >
+        <div class="options">
+            <div onclick="RemoveOptions(this)">-</div>
+            <input type="text" name="1">
+        </div>
+        <div onclick="AddOptions(this)">+</div>
+        <input type="button" value="保存投票选项" onclick="SendForm(this)">
+    </form>
+
+    <script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+    <script>
+        function AddOptions(ths) {
+            var new_tag = $(ths).prev().clone();
+            var name = parseInt($(ths).prev().children("input").attr("name"))+1;
+            new_tag.children("input").attr("name",name) ;
+            new_tag.children("input").val("") ;
+            $(ths).prev().after(new_tag);
+
+        }
+
+        function RemoveOptions(ths) {
+            var this_tag = $(ths).parent();
+            if(this_tag.prev().length==1){
+               this_tag.remove();
+            }else{
+            }
+
+        }
+
+        function SendForm(ths) {
+            var post_data_dict = {};
+            $(".options input").each(function(){
+                var n = $(this).attr('name');
+                var v = $(this).val();
+                post_data_dict[n] = v;
+            });
+
+            post_data_dict = JSON.stringify(post_data_dict);
+
+            $.ajax({
+                url:'/options/',
+                type:'POST',
+                data:{'post_data':post_data_dict},
+                success:function(arg){
+                    $("form").remove();
+                    var new_tag = arg;
+                    $('body').append(new_tag);
+                }
+            })
+        }
+    </script>
+
+</body>
+</html>
